@@ -1,29 +1,48 @@
-const int beat1 = 36;  // C2
-const int beat2 = 37;  // C#2
+const int interval = 1000;  // [ms]
+const int interval_highbeat = 500;
+
+const int note = 36;  // C2
+const int note_highbeat = 37;  // C#2
+
+const int sw1 = 2;
+const int sw2 = 3;
+const int led = 13;
 
 const int sensor = A0;
 
 void setup() {
+  pinMode(sw1, INPUT_PULLUP);
+  pinMode(sw2, INPUT_PULLUP);
+  pinMode(led, OUTPUT);
   //  Set MIDI baud rate:
   Serial1.begin(31250);
 }
 
-void loop1() {
-  noteOn(0x99, beat1, 0x45);
-  delay(500);
-  noteOn(0x99, beat1, 0x00);
-  delay(500);
+void beat() {
+  noteOn(0x99, note, 0x45);
+  delay(interval);
+  noteOn(0x99, note, 0x00);
+  delay(interval);
 }
 
-void loop2() {
-  noteOn(0x99, beat2, 0x45);
-  delay(250);
-  noteOn(0x99, beat2, 0x00);
-  delay(250);
+void highbeat() {
+  noteOn(0x99, note_highbeat, 0x45);
+  delay(interval_highbeat);
+  noteOn(0x99, note_highbeat, 0x00);
+  delay(interval_highbeat);
 }
 
 void loop() {
-  loop1();
+  int sw1st = digitalRead(sw1);
+  int sw2st = digitalRead(sw2);
+  if (!sw1st || !sw2st) {
+    digitalWrite(led, HIGH);
+    highbeat();
+  }
+  else {
+    digitalWrite(led, LOW);
+    beat();
+  }
 }
 
 //  plays a MIDI note.  Doesn't check to see that
