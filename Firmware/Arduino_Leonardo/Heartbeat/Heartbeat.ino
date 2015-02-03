@@ -5,37 +5,40 @@ const int note = 36;  // C2
 const int note_highbeat = 37;  // C#2
 
 const int sw1 = 2;
-const int sw2 = 3;
+const int light = 3;
 const int led = 13;
 
 const int sensor = A0;
 
 void setup() {
   pinMode(sw1, INPUT_PULLUP);
-  pinMode(sw2, INPUT_PULLUP);
+  pinMode(light, OUTPUT);
   pinMode(led, OUTPUT);
   //  Set MIDI baud rate:
   Serial1.begin(31250);
 }
 
 void beat() {
+  digitalWrite(light, HIGH);
   noteOn(0x99, note, 0x45);
   delay(interval);
+  digitalWrite(light, LOW);
   noteOn(0x99, note, 0x00);
   delay(interval);
 }
 
 void highbeat() {
+  digitalWrite(light, HIGH);
   noteOn(0x99, note_highbeat, 0x45);
   delay(interval_highbeat);
+  digitalWrite(light, LOW);
   noteOn(0x99, note_highbeat, 0x00);
   delay(interval_highbeat);
 }
 
 void loop() {
   int sw1st = digitalRead(sw1);
-  int sw2st = digitalRead(sw2);
-  if (!sw1st || !sw2st) {
+  if (sw1st) {
     digitalWrite(led, HIGH);
     highbeat();
   }
